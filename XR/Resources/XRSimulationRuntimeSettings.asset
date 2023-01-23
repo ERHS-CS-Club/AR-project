@@ -14,11 +14,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_EnvironmentLayer: 30
   m_EnvironmentScanParams:
-    m_MinimumRescanTime: 0.15
+    m_MinimumRescanTime: 0.1
     m_DeltaCameraDistanceToRescan: 0.025
     m_DeltaCameraAngleToRescan: 4
     m_RaysPerCast: 10
-    m_MaximumHitDistance: 2
+    m_MaximumHitDistance: 5
     m_MinimumHitDistance: 0.05
   m_TrackedImageDiscoveryParams:
     m_TrackingUpdateInterval: 0.1
