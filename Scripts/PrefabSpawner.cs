@@ -11,19 +11,18 @@ public class PrefabSpawner : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
+
     }
 
     // Update is called once per frame
     void Update()
     {
         if(Input.touchCount > 0)
-        {
-            Touch touch = Input.GetTouch(0);
-            
-            if(Physics.Raycast(_camera.ScreenPointToRay(touch.position), out RaycastHit hit, Mathf.Infinity))
+        {            
+            if(Physics.Raycast(_camera.ScreenPointToRay(Input.GetTouch(0).position), out RaycastHit hit, Mathf.Infinity))
             {
-                Instantiate(prefab, hit.point + hit.normal, prefab.transform.rotation);
+                Collider newCollider = Instantiate(prefab, hit.point, Quaternion.LookRotation(hit.normal)).GetComponent<Collider>();
+                newCollider.transform.position += hit.normal * newCollider.bounds.extents.z;
                 Debug.DrawLine(_camera.transform.position, hit.point, Color.red, 1);
             }
         }
@@ -31,7 +30,8 @@ public class PrefabSpawner : MonoBehaviour
         {
             if(Physics.Raycast(_camera.ScreenPointToRay(Input.mousePosition), out RaycastHit hit, Mathf.Infinity))
             {
-                Instantiate(prefab, hit.point, prefab.transform.rotation);
+                Collider newCollider = Instantiate(prefab, hit.point, Quaternion.LookRotation(hit.normal)).GetComponent<Collider>();
+                newCollider.transform.position += hit.normal * newCollider.bounds.extents.z;
                 Debug.DrawLine(_camera.transform.position, hit.point, Color.green, 1);
             }
         }
