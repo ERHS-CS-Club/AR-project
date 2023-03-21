@@ -50,6 +50,7 @@ public class PrefabSpawner : MonoBehaviour
                 //Debug.DrawLine(_camera.transform.position, hit.point, Color.red, 1);
             }
         }
+
     }
 
     // Update is called once per frame
@@ -78,19 +79,36 @@ public class PrefabSpawner : MonoBehaviour
             if (touch.phase == TouchPhase.Began)
             {
                 TestScreenPosition(touch.position);
+
+                if (Input.touchCount > 0)
+                {
+                    if (Physics.Raycast(_camera.ScreenPointToRay(Input.GetTouch(0).position), out RaycastHit hit, Mathf.Infinity))
+                    {
+                        Collider newCollider = Instantiate(prefab, hit.point, Quaternion.LookRotation(hit.normal)).GetComponent<Collider>();
+                        newCollider.transform.position += hit.normal * newCollider.bounds.extents.z;
+                        Debug.DrawLine(_camera.transform.position, hit.point, Color.red, 1);
+                    }
+                }
+                else if (Input.GetMouseButtonDown(0))
+                {
+                    TestScreenPosition(Input.mousePosition);
+
+                    if (Physics.Raycast(_camera.ScreenPointToRay(Input.mousePosition), out RaycastHit hit, Mathf.Infinity))
+                    {
+                        Collider newCollider = Instantiate(prefab, hit.point, Quaternion.LookRotation(hit.normal)).GetComponent<Collider>();
+                        newCollider.transform.position += hit.normal * newCollider.bounds.extents.z;
+                        Debug.DrawLine(_camera.transform.position, hit.point, Color.green, 1);
+                    }
+                }
+                else if (Input.GetKeyDown(KeyCode.Space))
+                {
+                    Instantiate(prefab, _camera.transform.position, _camera.transform.rotation).GetComponent<Rigidbody>().AddForce(_camera.transform.forward * 8, ForceMode.Impulse);
+                }
+                else
+                {
+                    previousDistance = -1f;
+                }
             }
-        }
-        else if (Input.GetMouseButtonDown(0))
-        {
-            TestScreenPosition(Input.mousePosition);
-        }
-        else if (Input.GetKeyDown(KeyCode.Space))
-        {
-            Instantiate(prefab, _camera.transform.position, _camera.transform.rotation).GetComponent<Rigidbody>().AddForce(_camera.transform.forward * 8, ForceMode.Impulse);
-        }
-        else
-        {
-            previousDistance = -1f;
         }
     }
 }
