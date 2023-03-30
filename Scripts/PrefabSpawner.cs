@@ -19,7 +19,6 @@ public class TapToPlace : MonoBehaviour
     Material previousMaterial;
     [SerializeField] int prefabIndex;
     [SerializeField] GameObject[] prefabs;
-    GameObject prefab;
     List<GameObject> placedObjects = new List<GameObject>();
 
     // Wheel
@@ -27,7 +26,7 @@ public class TapToPlace : MonoBehaviour
     Vector3 deltaHitPosition = Vector3.zero;
     [SerializeField] float rotateSpeed = 100;
 
-    void TestScreenPosition(Vector2 screenPosition)
+    void TapScreen(Vector2 screenPosition)
     {
         if (Physics.Raycast(_camera.ScreenPointToRay(screenPosition), out RaycastHit hit, Mathf.Infinity))
         {
@@ -56,6 +55,34 @@ public class TapToPlace : MonoBehaviour
                     }
                     Debug.DrawLine(_camera.transform.position, hit.point, Color.green, 1); // Draw a green line in the scene view
                     break;
+                case "Block":
+                    hitTransform.GetComponent<Block>().OnPickUp();
+                    break;
+                case "Wheel":
+                    break;
+                default:
+                    GameObject clone = Instantiate(prefabs[prefabIndex], hit.point, prefabs[prefabIndex].transform.rotation);
+                    Bounds colliderBounds = clone.GetComponent<Collider>().bounds;
+                    clone.transform.position += hit.normal * colliderBounds.extents.y;
+                    placedObjects.Add(clone);
+                    if (prefabIndex == 2)
+                    {
+                        Wheel wheelScript = clone.GetComponent<Wheel>();
+                        wheelScript._camera = _camera;
+                    }
+                    Debug.DrawLine(_camera.transform.position, hit.point, Color.red, 1); // Draw a red line in the scene view
+                    break;
+            }
+        }
+    }
+
+    void HoldScreen(Vector2 screenPosition)
+    {
+        if (Physics.Raycast(_camera.ScreenPointToRay(screenPosition), out RaycastHit hit, Mathf.Infinity))
+        {
+            hitTransform = hit.transform;
+            switch (hitTransform.tag)
+            {
                 case "Wheel":
                     deltaHitPosition = rotateSpeed * (hit.point - previousHitPosition);
                     Transform wheel = hitTransform;
@@ -85,38 +112,9 @@ public class TapToPlace : MonoBehaviour
                         wheel.Rotate(wheelOrigin.forward, Vector3.Dot(deltaHitPosition, wheelOrigin.right), Space.World);
                     }
                     break;
-                case "Block":
-                    hitTransform.position = _camera.ScreenToWorldPoint(screenPosition) + _camera.transform.forward * hit.distance;
-                    break;
-                default:
-                    GameObject clone = Instantiate(prefab, hit.point + hit.normal * prefab.transform.localScale.z, prefab.transform.rotation);
-                    placedObjects.Add(clone);
-                    if (prefabIndex == 2)
-                    {
-                        Wheel wheelScript = clone.GetComponent<Wheel>();
-                        wheelScript.player = transform;
-                        wheelScript._camera = _camera;
-                    }
-                    Debug.DrawLine(_camera.transform.position, hit.point, Color.red, 1); // Draw a red line in the scene view
-                    break;
             }
             previousHitPosition = hit.point;
         }
-        else if(hitTransform != null)
-        {
-            switch (hitTransform.tag)
-            {
-                case "Block":
-                    hitTransform.GetComponent<Block>().OnRelease();
-                    break;
-            }
-            hitTransform = null;
-        }
-    }
-
-    private void Start()
-    {
-        prefab = prefabs[prefabIndex];
     }
 
     void Update()
@@ -143,16 +141,39 @@ public class TapToPlace : MonoBehaviour
             Touch touch = Input.GetTouch(0);
             if (touch.phase == TouchPhase.Began)
             {
-                TestScreenPosition(touch.position);
+                TapScreen(touch.position);
+            }
+            else if(touch.phase == TouchPhase.Moved)
+            {
+                HoldScreen(touch.position);
             }
         }
         else if (Input.GetMouseButtonDown(0))
         {
-            TestScreenPosition(Input.mousePosition);
+            TapScreen(Input.mousePosition);
+        }
+        else if (Input.GetMouseButton(0))
+        {
+            HoldScreen(Input.mousePosition);
+            if(hitTransform != null && hitTransform.CompareTag("Block"))
+            {
+                Debug.Log("Here: " + hitTransform.name + _camera.ScreenToWorldPoint(Input.mousePosition));
+                hitTransform.position = _camera.ScreenToWorldPoint(Input.mousePosition) + _camera.transform.forward;
+            }
         }
         else
         {
             previousDistance = -1f; // When fingers are lifted from the screen reset the distance to stop the scale from jumping around
+            if (hitTransform != null)
+            {
+                switch (hitTransform.tag)
+                {
+                    case "Block":
+                        hitTransform.GetComponent<Block>().OnRelease();
+                        break;
+                }
+                hitTransform = null;
+            }
         }
     }
 
@@ -168,6 +189,5 @@ public class TapToPlace : MonoBehaviour
     public void ChangePrefab(TMP_Dropdown dropdown)
     {
         prefabIndex = dropdown.value;
-        prefab = prefabs[prefabIndex];
     }
 }
