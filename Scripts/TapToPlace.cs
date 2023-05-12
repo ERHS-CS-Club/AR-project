@@ -23,6 +23,7 @@ public class TapToPlace : MonoBehaviour
     Vector3 previousHitPosition = Vector3.zero;
     Vector3 deltaHitPosition = Vector3.zero;
     [SerializeField] float rotateSpeed = 100;
+    Wheel selectedWheel;
 
     // Block
     Block selectedBlock;
@@ -36,31 +37,32 @@ public class TapToPlace : MonoBehaviour
             switch (hit.transform.tag)
             {
                 case "Selectable":
-                    if (selectedTransform == hit.transform) // If the tapped object is already selected destroy it
+                    if(selectedTransform != null)
                     {
-                        placedObjects.Remove(selectedTransform.gameObject);
-                        Destroy(selectedTransform.gameObject);
-                        selectedTransform = null;
-                    }
-                    else // Otherwise select the tapped object
-                    {
-                        if (selectedTransform != null)
+                        if (selectedTransform == hit.transform) // If the tapped object is already selected destroy it
+                        {
+                            placedObjects.Remove(selectedTransform.gameObject);
+                            Destroy(selectedTransform.gameObject);
+                            selectedTransform = null;
+                        }
+                        else
                         {
                             selectedTransform.GetComponent<MeshRenderer>().material = previousMaterial;
                         }
-
-                        selectedTransform = hit.transform;
-                        MeshRenderer meshRenderer = selectedTransform.GetComponent<MeshRenderer>();
-                        previousMaterial = meshRenderer.material;
-                        meshRenderer.material = selectedMaterial;
                     }
+
+                    MeshRenderer meshRenderer = hit.transform.GetComponent<MeshRenderer>();
+                    previousMaterial = meshRenderer.material;
+                    meshRenderer.material = selectedMaterial;
                     Debug.DrawLine(_camera.transform.position, hit.point, Color.green, 1); // Draw a green line in the scene view
+                    selectedTransform = hit.transform;
                     break;
                 case "Block":
                     selectedBlock = hit.transform.GetComponent<Block>();
                     selectedBlock.OnPickUp();
                     break;
                 case "Wheel":
+                    selectedWheel = hit.transform.parent.GetComponent<Wheel>();
                     break;
                 default:
                     GameObject clone = Instantiate(prefabs[prefabIndex], hit.point, prefabs[prefabIndex].transform.rotation);
@@ -168,6 +170,11 @@ public class TapToPlace : MonoBehaviour
             {
                 selectedBlock.OnRelease();
                 selectedBlock = null;
+            }
+            if (selectedWheel != null)
+            {
+                selectedWheel.OnRelease();
+                selectedWheel = null;
             }
             previousDistance = -1f; // When fingers are lifted from the screen reset the distance to stop the scale from jumping around
         }
