@@ -1,10 +1,12 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class SnapPoint : MonoBehaviour
 {
     Block block;
+    bool occupied = false;
 
     void Start()
     {
@@ -13,9 +15,13 @@ public class SnapPoint : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.transform.CompareTag("Block") && other.transform != block.transform)
+        if (!occupied && other.transform.CompareTag("Block") && other.transform != block.transform)
         {
-            other.GetComponent<Block>().otherSnapPoint = transform;
+            Block otherBlock = other.GetComponent<Block>();
+            if(!otherBlock.otherSnapPoint || Vector3.Distance(otherBlock.otherSnapPoint.transform.position, otherBlock.transform.position) > Vector3.Distance(transform.position, otherBlock.transform.position))
+            {
+                otherBlock.otherSnapPoint = this;
+            }
         }
     }
 
@@ -24,10 +30,16 @@ public class SnapPoint : MonoBehaviour
         if (other.transform.CompareTag("Block"))
         {
             Block otherBlock = other.GetComponent<Block>();
-            if (otherBlock.otherSnapPoint == transform)
+            if (otherBlock.otherSnapPoint == this)
             {
                 block.otherSnapPoint = null;
+                occupied = false;
             }
         }
+    }
+
+    public void SnapBlock()
+    {
+        occupied = true;
     }
 }
