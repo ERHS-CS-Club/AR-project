@@ -5,12 +5,12 @@ using UnityEngine;
 public class Wheel : MonoBehaviour
 {
     public Camera _camera;
-    Transform wheel;
-    [SerializeField] int segments = 4;
+    public Transform wheelAnchor;
+    [SerializeField] int sections = 4;
 
     private void Start()
     {
-        wheel = transform.GetChild(0);
+        
     }
 
     void Update()
@@ -22,14 +22,12 @@ public class Wheel : MonoBehaviour
 
     public void OnRelease()
     {
-        float angleRange = 360f / segments;
-        Debug.Log(angleRange);
-        for(int i = 0; i < segments; i++)
+        float angleRange = 360f / sections;
+        for(int i = 0; i < sections; i++)
         {
-            if(wheel.eulerAngles.x > angleRange * i && wheel.eulerAngles.x < angleRange * (i+1))
+            if(wheelAnchor.localEulerAngles.z > angleRange * i && wheelAnchor.localEulerAngles.z < angleRange * (i+1))
             {
-                Debug.Log(angleRange * i + ": " + wheel.eulerAngles.x);
-                wheel.rotation = Quaternion.LookRotation(Quaternion.AngleAxis(angleRange * i, transform.forward) * transform.forward);
+                wheelAnchor.localEulerAngles = new Vector3(wheelAnchor.localEulerAngles.x, wheelAnchor.localEulerAngles.y, angleRange * i);
                 break;
             }
         }
