@@ -62,7 +62,7 @@ public class TapToPlace : MonoBehaviour
                     selectedBlock.OnPickUp();
                     break;
                 case "Wheel":
-                    selectedWheel = hit.transform.parent.GetComponent<Wheel>();
+                    selectedWheel = hit.transform.root.GetComponent<Wheel>();
                     break;
                 default:
                     GameObject clone = Instantiate(prefabs[prefabIndex], hit.point, prefabs[prefabIndex].transform.rotation);
@@ -82,41 +82,51 @@ public class TapToPlace : MonoBehaviour
 
     void HoldScreen(Vector2 screenPosition)
     {
-        if (Physics.Raycast(_camera.ScreenPointToRay(screenPosition), out RaycastHit hit, Mathf.Infinity, ~ignoreLayers))
+        if (selectedBlock != null)
         {
-            switch (hit.transform.tag)
+            selectedBlock.transform.position = _camera.transform.position + _camera.ScreenPointToRay(Input.mousePosition).direction;
+            Debug.DrawLine(_camera.transform.position, _camera.transform.position + _camera.ScreenPointToRay(Input.mousePosition).direction, Color.cyan, 0.1f);
+        }
+        else if (selectedWheel != null)
+        {
+            if (Physics.Raycast(_camera.ScreenPointToRay(screenPosition), out RaycastHit hit, Mathf.Infinity, ~ignoreLayers))
             {
-                case "Wheel":
+                if (hit.transform.CompareTag("Wheel"))
+                {
                     deltaHitPosition = rotateSpeed * (hit.point - previousHitPosition);
-                    Transform wheel = hit.transform;
-                    Transform wheelOrigin = wheel.parent;
-                    Vector3 delta = (wheelOrigin.position - hit.point).normalized;
-                    Vector3 crossForward = Vector3.Cross(delta, wheelOrigin.forward);
+                    Wheel wheel = hit.transform.root.GetComponent<Wheel>();
+                    Vector3 delta = (wheel.wheelAnchor.position - hit.point).normalized;
+                    Vector3 crossForward = Vector3.Cross(delta, wheel.wheelAnchor.forward);
 
                     if (crossForward.y > 0)
                     {
                         // Target is to the right
-                        wheel.Rotate(wheelOrigin.forward, Vector3.Dot(deltaHitPosition, wheelOrigin.up), Space.World);
+                        wheel.wheelAnchor.localEulerAngles = new Vector3(wheel.wheelAnchor.localEulerAngles.x, wheel.wheelAnchor.localEulerAngles.y, wheel.wheelAnchor.localEulerAngles.z + Vector3.Dot(deltaHitPosition, wheel.transform.up));
+                        //wheel.Rotate(wheelOrigin.forward, , Space.World);
                     }
                     else if (crossForward.y < 0)
                     {
                         // Target is to the left
-                        wheel.Rotate(wheelOrigin.forward, Vector3.Dot(-deltaHitPosition, wheelOrigin.up), Space.World);
+                        wheel.wheelAnchor.localEulerAngles = new Vector3(wheel.wheelAnchor.localEulerAngles.x, wheel.wheelAnchor.localEulerAngles.y, wheel.wheelAnchor.localEulerAngles.z + Vector3.Dot(-deltaHitPosition, wheel.transform.up));
+                        //wheel.Rotate(wheelOrigin.forward, Vector3.Dot(-deltaHitPosition, wheelOrigin.up), Space.World);
                     }
 
-                    if (hit.point.y > wheelOrigin.position.y)
+                    if (hit.point.y > wheel.wheelAnchor.position.y)
                     {
                         // Target is above
-                        wheel.Rotate(wheelOrigin.forward, Vector3.Dot(-deltaHitPosition, wheelOrigin.right), Space.World);
+                        wheel.wheelAnchor.localEulerAngles = new Vector3(wheel.wheelAnchor.localEulerAngles.x, wheel.wheelAnchor.localEulerAngles.y, wheel.wheelAnchor.localEulerAngles.z + Vector3.Dot(-deltaHitPosition, wheel.transform.right));
+                        //wheel.Rotate(wheelOrigin.forward, Vector3.Dot(-deltaHitPosition, wheelOrigin.right), Space.World
                     }
-                    else if (hit.point.y < wheelOrigin.position.y)
+                    else if (hit.point.y < wheel.wheelAnchor.position.y)
                     {
                         // Target is below
-                        wheel.Rotate(wheelOrigin.forward, Vector3.Dot(deltaHitPosition, wheelOrigin.right), Space.World);
+                        wheel.wheelAnchor.localEulerAngles = new Vector3(wheel.wheelAnchor.localEulerAngles.x, wheel.wheelAnchor.localEulerAngles.y, wheel.wheelAnchor.localEulerAngles.z + Vector3.Dot(deltaHitPosition, wheel.transform.right));
+                        //wheel.Rotate(wheelOrigin.forward, Vector3.Dot(deltaHitPosition, wheelOrigin.right), Space.World);
                     }
-                    break;
+                }
+
+                previousHitPosition = hit.point;
             }
-            previousHitPosition = hit.point;
         }
     }
 
@@ -158,11 +168,6 @@ public class TapToPlace : MonoBehaviour
         else if (Input.GetMouseButton(0))
         {
             HoldScreen(Input.mousePosition);
-            if(selectedBlock != null)
-            {
-                selectedBlock.transform.position = _camera.transform.position + _camera.ScreenPointToRay(Input.mousePosition).direction;
-                Debug.DrawLine(_camera.transform.position, _camera.transform.position + _camera.ScreenPointToRay(Input.mousePosition).direction, Color.cyan, 0.1f);
-            }
         }
         else
         {
