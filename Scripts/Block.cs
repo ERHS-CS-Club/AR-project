@@ -5,7 +5,7 @@ using UnityEngine;
 public class Block : MonoBehaviour
 {
     [SerializeField] GameObject[] snapPoints;
-    public Transform otherSnapPoint;
+    public SnapPoint otherSnapPoint;
 
     public void OnPickUp()
     {
@@ -17,8 +17,8 @@ public class Block : MonoBehaviour
         Debug.Log("Release");
         if (otherSnapPoint != null)
         {
-            transform.position = otherSnapPoint.position;
-            transform.rotation = otherSnapPoint.rotation;
+            transform.position = otherSnapPoint.transform.position;
+            transform.rotation = otherSnapPoint.transform.rotation;
         }
     }
 }
