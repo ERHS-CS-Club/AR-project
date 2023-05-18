@@ -66,10 +66,13 @@ public class TapToPlace : MonoBehaviour
                     break;
                 default:
                     GameObject clone = Instantiate(prefabs[prefabIndex], hit.point, prefabs[prefabIndex].transform.rotation);
-                    Bounds colliderBounds = clone.GetComponent<Collider>().bounds;
-                    clone.transform.position += hit.normal * colliderBounds.extents.y;
+                    if(clone.TryGetComponent<Collider>(out var cloneCollider))
+                    {
+                        Bounds colliderBounds = cloneCollider.bounds;
+                        clone.transform.position += hit.normal * colliderBounds.extents.y;
+                    }
                     placedObjects.Add(clone);
-                    if (prefabIndex == 2)
+                    if (clone.CompareTag("Wheel"))
                     {
                         Wheel wheelScript = clone.GetComponent<Wheel>();
                         wheelScript._camera = _camera;
@@ -102,26 +105,22 @@ public class TapToPlace : MonoBehaviour
                     {
                         // Target is to the right
                         wheel.wheelAnchor.localEulerAngles = new Vector3(wheel.wheelAnchor.localEulerAngles.x, wheel.wheelAnchor.localEulerAngles.y, wheel.wheelAnchor.localEulerAngles.z + Vector3.Dot(deltaHitPosition, wheel.transform.up));
-                        //wheel.Rotate(wheelOrigin.forward, , Space.World);
                     }
                     else if (crossForward.y < 0)
                     {
                         // Target is to the left
                         wheel.wheelAnchor.localEulerAngles = new Vector3(wheel.wheelAnchor.localEulerAngles.x, wheel.wheelAnchor.localEulerAngles.y, wheel.wheelAnchor.localEulerAngles.z + Vector3.Dot(-deltaHitPosition, wheel.transform.up));
-                        //wheel.Rotate(wheelOrigin.forward, Vector3.Dot(-deltaHitPosition, wheelOrigin.up), Space.World);
                     }
 
                     if (hit.point.y > wheel.wheelAnchor.position.y)
                     {
                         // Target is above
                         wheel.wheelAnchor.localEulerAngles = new Vector3(wheel.wheelAnchor.localEulerAngles.x, wheel.wheelAnchor.localEulerAngles.y, wheel.wheelAnchor.localEulerAngles.z + Vector3.Dot(-deltaHitPosition, wheel.transform.right));
-                        //wheel.Rotate(wheelOrigin.forward, Vector3.Dot(-deltaHitPosition, wheelOrigin.right), Space.World
                     }
                     else if (hit.point.y < wheel.wheelAnchor.position.y)
                     {
                         // Target is below
                         wheel.wheelAnchor.localEulerAngles = new Vector3(wheel.wheelAnchor.localEulerAngles.x, wheel.wheelAnchor.localEulerAngles.y, wheel.wheelAnchor.localEulerAngles.z + Vector3.Dot(deltaHitPosition, wheel.transform.right));
-                        //wheel.Rotate(wheelOrigin.forward, Vector3.Dot(deltaHitPosition, wheelOrigin.right), Space.World);
                     }
                 }
 
