@@ -64,6 +64,9 @@ public class TapToPlace : MonoBehaviour
                 case "Wheel":
                     selectedWheel = hit.transform.root.GetComponent<Wheel>();
                     break;
+                case "WheelButton":
+                    hit.transform.GetComponent<Animation>().Play();
+                    break;
                 default:
                     GameObject clone = Instantiate(prefabs[prefabIndex], hit.point, prefabs[prefabIndex].transform.rotation);
                     if(clone.TryGetComponent<Collider>(out var cloneCollider))
