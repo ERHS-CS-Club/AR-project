@@ -30,10 +30,19 @@ public class TapToPlace : MonoBehaviour
 
     [SerializeField] LayerMask ignoreLayers;
 
+    [SerializeField] GameObject tapHint;
+    [SerializeField] GameObject spinHint;
+
+    private void Start()
+    {
+        tapHint.SetActive(true);
+    }
+
     void TapScreen(Vector2 screenPosition)
     {
         if (Physics.Raycast(_camera.ScreenPointToRay(screenPosition), out RaycastHit hit, Mathf.Infinity, ~ignoreLayers))
         {
+            tapHint.SetActive(false);
             switch (hit.transform.tag)
             {
                 case "Selectable":
@@ -50,7 +59,7 @@ public class TapToPlace : MonoBehaviour
                             selectedTransform.GetComponent<MeshRenderer>().material = previousMaterial;
                         }
                     }
-
+                    
                     MeshRenderer meshRenderer = hit.transform.GetComponent<MeshRenderer>();
                     previousMaterial = meshRenderer.material;
                     meshRenderer.material = selectedMaterial;
@@ -63,6 +72,7 @@ public class TapToPlace : MonoBehaviour
                     break;
                 case "Wheel":
                     selectedWheel = hit.transform.root.GetComponent<Wheel>();
+                    spinHint.SetActive(false);
                     break;
                 case "WheelButton":
                     hit.transform.GetComponent<Animation>().Play();
@@ -77,6 +87,7 @@ public class TapToPlace : MonoBehaviour
                     placedObjects.Add(clone);
                     if (clone.CompareTag("Wheel"))
                     {
+                        spinHint.SetActive(true);
                         Wheel wheelScript = clone.GetComponent<Wheel>();
                         wheelScript._camera = _camera;
                     }
@@ -103,6 +114,7 @@ public class TapToPlace : MonoBehaviour
                     Wheel wheel = hit.transform.root.GetComponent<Wheel>();
                     Vector3 delta = (wheel.wheelAnchor.position - hit.point).normalized;
                     Vector3 crossForward = Vector3.Cross(delta, wheel.wheelAnchor.forward);
+                    
 
                     if (crossForward.y > 0)
                     {
