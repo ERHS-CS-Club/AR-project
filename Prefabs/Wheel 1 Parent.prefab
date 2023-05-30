@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 2996136777419097070}
   - component: {fileID: 4686616017438259737}
   m_Layer: 0
-  m_Name: Bottom
+  m_Name: Button
   m_TagString: WheelButton
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -134,7 +134,7 @@ GameObject:
   - component: {fileID: 8209621012229683370}
   - component: {fileID: 5611598101997894536}
   m_Layer: 2
-  m_Name: Wheel Parent
+  m_Name: Wheel 1 Parent
   m_TagString: Wheel
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
