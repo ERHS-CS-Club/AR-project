@@ -1488,10 +1488,10 @@ MonoBehaviour:
   m_TrackingStateInput:
     m_UseReference: 0
     m_Action:
-      m_Name: 
+      m_Name: Tracking State Input
       m_Type: 0
       m_ExpectedControlType: 
-      m_Id: 
+      m_Id: 3a0329ca-a9cd-4989-bcb8-8cbfeb6783f7
       m_Processors: 
       m_Interactions: 
       m_SingletonActionBindings: []
@@ -2131,6 +2131,7 @@ MonoBehaviour:
   - {fileID: 431281366717094401, guid: 864e87f9f799c4d4ca1050d541895e36, type: 3}
   - {fileID: 462117529830264908, guid: 41b3fe9a667398a4f849e2ded51ce2c7, type: 3}
   - {fileID: 2123272317400239138, guid: b098507043bb02d4eb146b64d4004032, type: 3}
+  - {fileID: 2123272317400239138, guid: 71c5d0934eb46654c908a8d34922d0c2, type: 3}
   rotateSpeed: 100
   ignoreLayers:
     serializedVersion: 2
