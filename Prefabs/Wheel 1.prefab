@@ -422,7 +422,7 @@ Transform:
   m_GameObject: {fileID: 2123272317400239138}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.3, y: 0.3, z: 0.3}
+  m_LocalScale: {x: 0.2, y: 0.2, z: 0.2}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 6169185437844280677}
@@ -453,12 +453,7 @@ MonoBehaviour:
   - rat
   - hat
   wordAnimations: []
-  audioSource: {fileID: 3303504418059611254}
-  wordAudioClips:
-  - {fileID: 8300000, guid: cfdacffdce790d04a83962e10ce7bda0, type: 3}
-  - {fileID: 8300000, guid: 81a769246dba8694fa12197505da9ea7, type: 3}
-  - {fileID: 8300000, guid: 2676859e0b40add4c875cff3440ad8fc, type: 3}
-  - {fileID: 8300000, guid: 57ed0e4d11c813f4d9436f419b187764, type: 3}
+  wordAudioSources: []
 --- !u!65 &5611598101997894536
 BoxCollider:
   m_ObjectHideFlags: 0
