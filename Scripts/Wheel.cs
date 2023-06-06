@@ -30,7 +30,21 @@ public class Wheel : MonoBehaviour
         float angleRange = 360f / sections;
         for(int i = 0; i < sections; i++)
         {
-            if(wheelAnchor.localEulerAngles.z > angleRange * i && wheelAnchor.localEulerAngles.z < angleRange * (i+1))
+            Vector3 fixedEulers = wheelAnchor.localEulerAngles;
+            if(wheelAnchor.localEulerAngles.x > 180)
+            {
+                fixedEulers.x = wheelAnchor.localEulerAngles.x - 180;
+            }
+            if(wheelAnchor.localEulerAngles.y > 180)
+            {
+                fixedEulers.y = wheelAnchor.localEulerAngles.y - 180;
+            }
+            if(wheelAnchor.localEulerAngles.z > 180)
+            {
+                fixedEulers.z = wheelAnchor.localEulerAngles.z - 180;
+            }
+            float halfAngle = angleRange * 0.5f;
+            if(fixedEulers.z > angleRange * i - halfAngle && fixedEulers.z < angleRange * (i+1) - halfAngle)
             {
                 selectedSection = i;
                 float targetAngle = angleRange * i;
