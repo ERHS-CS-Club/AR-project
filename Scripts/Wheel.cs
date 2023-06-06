@@ -32,8 +32,12 @@ public class Wheel : MonoBehaviour
         {
             if(wheelAnchor.localEulerAngles.z > angleRange * i && wheelAnchor.localEulerAngles.z < angleRange * (i+1))
             {
-                wheelAnchor.localEulerAngles = new Vector3(wheelAnchor.localEulerAngles.x, wheelAnchor.localEulerAngles.y, angleRange * i);
                 selectedSection = i;
+                float targetAngle = angleRange * i;
+                while(Mathf.Abs(wheelAnchor.localEulerAngles.z - targetAngle) > 1)
+                {
+                    wheelAnchor.localEulerAngles = Vector3.RotateTowards(wheelAnchor.localEulerAngles, new Vector(wheelAnchor.localEulerAngles.x, wheelAnchor.localEulerAngles.y, targetAngle), Time.deltaTime * 5, 0);
+                }
                 break;
             }
         }
