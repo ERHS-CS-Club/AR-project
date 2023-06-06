@@ -9,7 +9,8 @@ public class Wheel : MonoBehaviour
     [SerializeField] int sections = 4;
     [SerializeField] string[] words;
     [SerializeField] Animation[] wordAnimations;
-    [SerializeField] AudioSource[] wordAudioSources;
+    [SerializeField] AudioSource audioSource;
+    [SerializeField] AudioClip[] wordAudioClips;
     int selectedSection = 0;
 
     private void Start()
@@ -40,7 +41,8 @@ public class Wheel : MonoBehaviour
 
     public void ShowWord()
     {
-        wordAnimations[selectedSection].Play();
-        wordAudioSources[selectedSection].Play();
+        //wordAnimations[selectedSection].Play();
+        audioSource.clip = wordAudioClips[selectedSection];
+        audioSource.Play();
     }
 }

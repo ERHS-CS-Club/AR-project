@@ -76,6 +76,7 @@ public class TapToPlace : MonoBehaviour
                     break;
                 case "WheelButton":
                     hit.transform.GetComponent<Animation>().Play();
+                    hit.transform.parent.GetComponent<Wheel>().ShowWord();
                     break;
                 default:
                     GameObject clone = Instantiate(prefabs[prefabIndex], hit.point, prefabs[prefabIndex].transform.rotation);
