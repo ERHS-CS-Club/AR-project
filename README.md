@@ -7,4 +7,4 @@ Purpose:
 - Learn how to use the Unity Engine
 - Learn how to build apps to iOS devices
 
-The ultimate goal for this app is to teach elementary English in a innovative way.
+The ultimate goal of this app is to teach English innovatively.
