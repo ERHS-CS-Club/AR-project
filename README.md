@@ -1,5 +1,5 @@
 # AR_Project
-Augmented Reality project created in Unity version 2022.2.4f1 for iOS. 
+Augmented Reality project created in Unity version 2022.2.4f1 for mobile devices. 
 
 Purpose:
 - Learn about Augmented Reality
