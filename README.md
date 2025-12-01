@@ -1,10 +1,10 @@
 # AR_Project
 Augmented Reality project created in Unity version 2022.2.4f1 for mobile devices. 
 
-Purpose:
-- Learn about Augmented Reality
-- Learn how to code in C#
-- Learn how to use the Unity Engine
-- Build apps to iOS and Android devices
+AR plane detection, point cloud tracking, gestures, and virtual object interaction were implemented via the Unity Engine and C#.
 
-The ultimate goal of this app is to teach English innovatively.
+Goals for the ERHS CS Club:
+- Learn and implement Augmented Reality mobile applications
+- Learn object-oriented programming with C#
+- Learn how to use the Unity Engine
+- Build and compile Unity projects to executables on iOS and Android devices
